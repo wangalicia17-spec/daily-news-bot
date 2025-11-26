@@ -123,7 +123,7 @@ def get_html_template(content, current_date, is_archive=False):
     生成 HTML 页面 (包含 Tailwind CSS, 音乐播放器, 日期选择器)
     """
     # 背景音乐链接 (网易云音乐/外部 CDN 直链，选用了一首舒缓的钢琴曲)
-    music_url = "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" 
+    music_url = "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" 
     # 或者用这个备用链接（Lofi风格）：
     # music_url = "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3"
     
@@ -175,7 +175,7 @@ def get_html_template(content, current_date, is_archive=False):
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="text-sm text-slate-400">📅 历史回顾:</span>
-                    <input type="date" id="datePicker" class="bg-slate-700 text-white border border-slate-600 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500">
+                    <input type="date" id="datePicker" min="2025-11-26" class="..." ...>
                     <button onclick="gotoDate()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-3 py-1 rounded transition">前往</button>
                     <a href="index.html" class="ml-2 text-sm text-slate-400 hover:text-white underline">回今日</a>
                 </div>
