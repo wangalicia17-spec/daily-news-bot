@@ -34,6 +34,11 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add index.html
-          git commit -m "Update daily news" || exit 0
-          git push
+          
+          # === 关键修改在这里 ===
+          # 原来是 git add index.html，现在改成 git add . 
+          # 意思是：添加当前目录下所有的变动（包括 index.html 和 archives 文件夹）
+          git add .
+          
+          git commit -m "Update news and archives" || echo "⚠️ 本次无变化，跳过提交"
+          git push || echo "⚠️ 推送失败，跳过"
