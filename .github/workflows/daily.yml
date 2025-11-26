@@ -22,7 +22,7 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-        run: pip install feedparser openai pytz requests
+run: pip install feedparser "openai>=1.0.0" pytz requests
 
       - name: Run script
         env:
