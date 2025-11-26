@@ -125,6 +125,14 @@ def get_html_template(content, current_date, is_archive=False):
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{page_title}</title>
+        <!-- === 新增：iOS 专属优化配置 === -->
+        <!-- 1. 设置 App 图标 (我找了一个好看的新闻 3D 图标) -->
+        <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2965/2965879.png">
+        <!-- 2. 开启 Web App 模式 (隐藏 Safari 地址栏，沉浸式阅读) -->
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <!-- 3. 设置状态栏颜色 (黑色) -->
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <!-- ============================== -->
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
