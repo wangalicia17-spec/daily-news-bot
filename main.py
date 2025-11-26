@@ -123,7 +123,9 @@ def get_html_template(content, current_date, is_archive=False):
     生成 HTML 页面 (包含 Tailwind CSS, 音乐播放器, 日期选择器)
     """
     # 背景音乐链接 (网易云音乐/外部 CDN 直链，选用了一首舒缓的钢琴曲)
-    music_url = "https://music.163.com/song/media/outer/url?id=1386687005.mp3" # 示例：菊次郎的夏天/轻音乐
+    music_url = "https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3" 
+    # 或者用这个备用链接（Lofi风格）：
+    # music_url = "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3"
     
     # 移除反引号
     safe_content = content.replace("`", "")
