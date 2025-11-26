@@ -22,7 +22,8 @@ jobs:
           python-version: '3.9'
 
       - name: Install dependencies
-run: pip install feedparser "openai>=1.0.0" pytz requests
+        # 强制安装支持 DeepSeek 的 OpenAI 版本
+        run: pip install feedparser "openai>=1.0.0" pytz requests
 
       - name: Run script
         env:
