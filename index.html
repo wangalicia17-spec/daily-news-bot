@@ -1,33 +1,77 @@
 
     <!DOCTYPE html>
-    <html>
+    <html lang="zh-CN">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>每日早报 - 2025年11月26日</title>
+        <title>每日全览 - 2025年11月26日</title>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <style>
-            body { max-width: 800px; margin: 0 auto; padding: 20px; font-family: -apple-system, sans-serif; line-height: 1.6; color: #333; }
-            h1 { border-bottom: 2px solid #eaeaea; padding-bottom: 10px; }
-            a { color: #0366d6; text-decoration: none; }
+            :root { --primary-color: #2563eb; --bg-color: #f8fafc; --card-bg: #ffffff; }
+            body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: var(--bg-color); color: #1e293b; margin: 0; padding: 20px; line-height: 1.6; }
+            .container { max-width: 800px; margin: 0 auto; background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+            
+            h1 { text-align: center; color: #0f172a; margin-bottom: 5px; font-size: 24px; }
+            .subtitle { text-align: center; color: #64748b; font-size: 14px; margin-bottom: 30px; }
+            
+            /* Markdown 样式优化 */
+            h2 { color: var(--primary-color); border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; margin-top: 30px; font-size: 18px; }
+            ul { padding-left: 20px; }
+            li { margin-bottom: 12px; }
+            a { color: var(--primary-color); text-decoration: none; word-break: break-all; }
             a:hover { text-decoration: underline; }
+            p { margin-bottom: 10px; }
+            
+            @media (max-width: 600px) {
+                body { padding: 10px; }
+                .container { padding: 20px; }
+            }
         </style>
     </head>
     <body>
-        <h1>☕ 每日早报 (2025年11月26日)</h1>
-        <div id="content"></div>
+        <div class="container">
+            <h1>🗞️ 每日深度早报</h1>
+            <div class="subtitle">2025年11月26日 | 更新于北京时间 12:57</div>
+            <div id="content"></div>
+        </div>
+        
         <script>
-            // 这里使用已经处理好的 safe_content 变量
-            document.getElementById('content').innerHTML = marked.parse(`# 每日早报
+            document.getElementById('content').innerHTML = marked.parse(`markdown
+## 💰 全球财经
 
-## 技术热点
-- V2EX网友热议黑五购物推荐。
-- 有用户咨询硬件报警器芯片能否重新烧录以提取IMEI。
-- 网友分享NanoBanana Pro工具，可免费试用并提升出片效率。
-- 社区讨论Mac与iPhone的选购建议。
+* **中国头部房企报告巨额亏损，显示房地产危机蔓延** - [链接](https://www.wsj.com/articles/even-chinas-property-stalwart-isnt-immune-from-the-crisis-19799863)
+* **特斯联半年报：营收增长77%，宣布迈入空间智能时代** - [链接](https://36kr.com/p/3552360997141633?f=rss)
+* **云鲸智能中国区负责人王俊刚已于近期离职** - [链接](https://36kr.com/p/3568566627056517?f=rss)
+* **充电宝新规将落地，原有3C认证将全面失效** - [链接](https://36kr.com/p/3569142279224197?f=rss)
 
-## 国际动态
-- 无相关内容提供。`);
+## 🛡️ 军事与地缘
+
+* **巴勒斯坦民众徒步涌回加沙北部** - [链接](https://www.wsj.com/articles/palestinians-flock-back-to-northern-gaza-on-foot-after-hostage-release-breakthrough-3f60e2db)
+* **以色列炮火在加沙造成伤亡，卡茨与扎米尔危机升级** - [链接](https://chinese.aljazeera.net/palestine-israel-conflict/liveblog/2025/11/26/%e4%bb%a5%e8%89%b2%e5%88%97%e5%af%b9%e5%8a%a0%e6%b2%99%e6%88%98%e4%ba%89%e7%9a%84%e4%bb%8a%e6%97%a5%e5%8f%91%e5%b1%95%e5%8d%a0%e9%a2%86%e5%86%9b%e7%82%ae%e7%81%ab%e8%87%b4%e4%ba%ba%e4%bc%a4%e4%ba%a1?traffic_source=rss)
+* **特朗普将派遣高级特使前往俄罗斯，以推动敲定乌克兰和平计划** - [链接](https://chinese.aljazeera.net/news/2025/11/26/%e7%89%b9%e6%9c%97%e6%99%ae%e5%b0%86%e6%b4%be%e9%81%a3%e9%ab%98%e7%ba%a7%e7%89%b9%e4%bd%bf%e5%89%8d%e5%be%80%e4%bf%84%e7%bd%97%e6%96%af%e4%bb%a5%e6%8e%a8%e5%8a%a8%e6%95%b2%e5%ae%9a%e4%b9%8c%e5%85%8b?traffic_source=rss)
+* **海底通讯电缆疑似遭破坏，触发首次由北约主导的响应** - [链接](https://www.wsj.com/articles/suspected-sabotage-of-deep-sea-cable-triggers-first-nato-led-response-337119ba)
+* **以色列被指控企图将数千名巴勒斯坦人逐出西岸地区** - [链接](https://chinese.aljazeera.net/news/2025/11/26/%e4%bb%a5%e8%89%b2%e5%88%97%e4%bc%81%e5%9b%be%e5%b0%86%e6%95%b0%e5%8d%83%e5%90%8d%e5%b7%b4%e5%8b%92%e6%96%af%e5%9d%a6%e4%ba%ba%e9%80%90%e5%87%ba%e8%a5%bf%e5%b2%b8?traffic_source=rss)
+
+## 🤖 技术前沿
+
+* **黑芝麻智能发布机器人“通用大脑”平台SesameX** - [链接](https://36kr.com/p/3568484680219781?f=rss)
+* **MIT专访DeepMind诺奖得主，探讨AlphaFold的未来发展方向** - [链接](https://www.technologyreview.com/2025/11/24/1128322/whats-next-for-alphafold-a-conversation-with-a-google-deepmind-nobel-laureate/)
+* **《AI现状》报告：聊天机器人伴侣的兴起引发对隐私未来的担忧** - [链接](https://www.technologyreview.com/2025/11/24/1128051/the-state-of-ai-chatbot-companions-and-the-future-of-our-privacy/)
+* **企业如何将VMware迁移与业务连续性规划相结合** - [链接](https://www.technologyreview.com/2025/11/25/1128173/aligning-vmware-migration-with-business-continuity/)
+
+## 🌏 社会焦点
+
+* **获释的以色列人质体内仍残留10月7日袭击时的弹片** - [链接](https://www.wsj.com/articles/freed-israeli-hostages-still-had-shrapnel-in-their-bodies-from-oct-7-attack-3de8cd1e)
+* **FBI调查敦促美军违抗“非法命令”的民主党人** - [链接](https://chinese.aljazeera.net/news/political/2025/11/26/%e8%81%94%e9%82%a6%e8%b0%83%e6%9f%a5%e5%b1%80%e8%b0%83%e6%9f%a5%e6%95%a6%e4%bf%83%e7%be%8e%e5%86%9b%e8%bf%9d%e6%8a%97%e9%9d%9e%e6%b3%95%e5%91%bd%e4%bb%a4%e7%9a%84%e6%b0%91%e4%b8%bb%e5%85%9a%e4%ba%ba?traffic_source=rss)
+* **上海地铁试点“站票车厢”以应对客流压力** - [链接](https://36kr.com/p/3569142279224197?f=rss)
+* **超级猩猩客服回应“闭店潮”传闻** - [链接](https://36kr.com/p/3569142279224197?f=rss)
+
+## 🎬 娱乐与生活
+
+* **少数派文章探讨“不自律”也能拥有的良好生活方式** - [链接](https://sspai.com/post/103819)
+* **飞傲DM15 R2R便携蓝牙CD播放机正式发售** - [链接](https://sspai.com/post/104065)
+* **社区热议“黑五”购物推荐及智能眼镜等数码产品** - [链接](https://www.v2ex.com/t/1175151#reply2)
+`);
         </script>
     </body>
     </html>
