@@ -5,10 +5,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>今日早报: 2025-11-26</title>
-        <!-- 引入 Tailwind CSS (商业感 UI 核心) -->
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <!-- 引入 Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
         <style>
             body { font-family: 'Noto Sans SC', sans-serif; background-color: #0f172a; color: #e2e8f0; }
@@ -17,15 +15,12 @@
             a:hover { color: #7dd3fc; text-decoration: underline; }
             h2 { color: #facc15; font-size: 1.5rem; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
             li { margin-bottom: 0.8rem; line-height: 1.7; }
-            /* 播放器样式 */
-            .music-player { position: fixed; bottom: 20px; right: 20px; z-index: 50; }
-            .date-picker-container { margin-bottom: 20px; text-align: right; }
+            .music-player { position: fixed; bottom: 20px; right: 20px; z-index: 50; display: flex; gap: 10px; align-items: center; }
         </style>
     </head>
     <body class="min-h-screen p-4 md:p-8 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
 
         <div class="max-w-4xl mx-auto">
-            <!-- 头部区域 -->
             <header class="mb-8 text-center">
                 <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-2">
                     每日全球深度早报
@@ -33,128 +28,146 @@
                 <p class="text-slate-400 text-sm tracking-widest uppercase">Global Intelligence Briefing | 2025-11-26</p>
             </header>
 
-            <!-- 功能栏：日期选择 -->
-            <div class="glass-panel rounded-xl p-4 mb-6 flex justify-between items-center">
-                <div class="text-sm text-slate-300">
-                    <span class="mr-2">🎵 沉浸阅读模式</span>
+            <div class="glass-panel rounded-xl p-4 mb-6 flex justify-between items-center flex-wrap gap-4">
+                <div class="text-sm text-slate-300 flex items-center">
+                    <span id="musicStatus">🎵 正在加载播放列表...</span>
                 </div>
                 <div class="flex items-center gap-2">
                     <span class="text-sm text-slate-400">📅 历史回顾:</span>
-                    <input type="date" id="datePicker" min="2025-11-26" class="..." ...>
+                    <input type="date" id="datePicker" min="2025-11-26" class="bg-slate-700 text-white border border-slate-600 rounded px-2 py-1 text-sm focus:outline-none focus:border-blue-500">
                     <button onclick="gotoDate()" class="bg-blue-600 hover:bg-blue-500 text-white text-sm px-3 py-1 rounded transition">前往</button>
                     <a href="index.html" class="ml-2 text-sm text-slate-400 hover:text-white underline">回今日</a>
                 </div>
             </div>
 
-            <!-- 内容区域 -->
             <div class="glass-panel rounded-2xl p-6 md:p-10 shadow-2xl">
-                <div id="content" class="prose prose-invert max-w-none">
-                    <!-- AI 内容将被渲染在这里 -->
-                </div>
+                <div id="content" class="prose prose-invert max-w-none"></div>
             </div>
 
-            <!-- 底部版权 -->
             <footer class="mt-10 text-center text-slate-500 text-xs">
-                Powered by DeepSeek AI & GitHub Actions | Designed for Professionals
+                Powered by DeepSeek AI & GitHub Actions
             </footer>
         </div>
 
-        <!-- 隐形音频播放器 (自动播放尝试) -->
-        <audio id="bgMusic" loop autoplay>
-            <source src="https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3" type="audio/mpeg">
+        <audio id="bgMusic">
             您的浏览器不支持音频播放。
         </audio>
         
-        <!-- 悬浮音乐控制按钮 -->
-        <div class="music-player glass-panel rounded-full p-3 cursor-pointer hover:bg-slate-700 transition" onclick="toggleMusic()" title="切换音乐">
-            <span id="musicIcon" class="text-2xl">🔇</span> 
-            <!-- 默认静音图标，因为浏览器可能阻止自动播放，需用户点击 -->
+        <!-- 悬浮播放控件 -->
+        <div class="music-player">
+            <!-- 上一首 -->
+            <button class="glass-panel rounded-full p-3 hover:bg-slate-700 transition" onclick="playNext()" title="切歌">
+                ⏭️
+            </button>
+            <!-- 播放/暂停 -->
+            <button class="glass-panel rounded-full p-3 hover:bg-slate-700 transition" onclick="toggleMusic()" title="播放/暂停">
+                <span id="musicIcon">🔇</span>
+            </button>
         </div>
 
         <script>
-            // 1. 渲染 Markdown
+            // 1. 内容渲染
             document.getElementById('content').innerHTML = marked.parse(`# 2025-11-26 全球深度早报
 
 ## 📈 市场与财富 (Markets & Wealth)
 
-* **惠普、戴尔科技盘后股价异动** - [查看原文](https://www.cnbc.com/2025/11/25/stocks-making-the-biggest-moves-after-hours-hpq-dell-urbn.html)
-* **BlackRock比特币基金遭遇创纪录资金外流** - [查看原文](https://www.cnbc.com/2025/11/24/blackrocks-ishares-bitcoin-fund-sees-record-exodus-as-crypto-heads-for-worst-month-since-2022.html)
-* **Cathie Wood斥资1670万美元买入AI巨头股票** - [查看原文](https://finance.yahoo.com/news/cathie-wood-buys-16-7-180700145.html)
-* **科技公司通过债务市场为AI和云扩张融资** - [查看原文](https://finance.yahoo.com/news/factbox-tech-companies-tap-debt-180752632.html)
-* **美联储短期融资市场工具面临考验** - [查看原文](https://www.wsj.com/economy/central-banking/the-feds-tool-for-calming-short-term-funding-markets-is-being-tested-63a32795?siteid=yhoof2&yptr=yahoo)
-* **部分银行抵制美联储市场稳定工具** - [查看原文](https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-11-24-2025/card/why-some-banks-are-resisting-one-the-fed-s-tools-for-calming-markets-ZIkx44CE9V05OdviNboE?siteid=yhoof2&yptr=yahoo)
-* **万科巨额亏损显示中国房地产危机蔓延** - [查看原文](https://www.wsj.com/articles/even-chinas-property-stalwart-isnt-immune-from-the-crisis-19799863)
+* **英伟达秘密备忘录点名反驳迈克尔·伯里AI泡沫论** - [查看原文](https://www.cnbc.com/2025/11/25/nvidia-pushes-back-on-charges-that-ai-investment-is-a-bubble.html)
+* **贝莱德比特币ETF遭遇创纪录资金外流，11月流出22亿美元** - [查看原文](https://www.cnbc.com/2025/11/24/blackrocks-ishares-bitcoin-fund-sees-record-exodus-as-crypto-heads-for-worst-month-since-2022.html)
+* **惠普、戴尔等科技股盘后大幅波动** - [查看原文](https://www.cnbc.com/2025/11/25/stocks-making-the-biggest-moves-after-hours-hpq-dell-urbn.html)
+* **黄金期货上涨0.37%至4091.90美元** - [查看原文](https://www.wsj.com/finance/commodities-futures/gold-flat-fed-uncertainty-central-banks-demand-in-focus-96aea57c?siteid=yhoof2&yptr=yahoo)
+* **Robinhood股价上周下跌11%，投资者关注抄底机会** - [查看原文](https://finance.yahoo.com/news/down-11-last-week-buy-183002293.html)
+* **比特币跟随股市走高，但加密货币交易员仍保持警惕** - [查看原文](https://finance.yahoo.com/news/bitcoin-weakness-persists-crypto-steadies-174420489.html)
 
 ## 🚀 硅谷与芯片 (Tech & AI)
 
-* **英伟达秘密备忘录点名Michael Burry反驳AI泡沫指控** - [查看原文](https://www.cnbc.com/2025/11/25/nvidia-pushes-back-on-charges-that-ai-investment-is-a-bubble.html)
-* **Michael Burry的下一个"大空头"：AI是泡沫** - [查看原文](https://www.cnbc.com/2025/11/25/michael-burrys-next-big-short-an-inside-look-at-his-analysis-showing-ai-is-a-bubble.html)
-* **华为发布开源AI容器技术Flex:ai** - [查看原文](https://36kr.com/p/3568501130460297?f=rss)
-* **黑芝麻智能发布机器人"通用大脑"SesameX平台** - [查看原文](https://36kr.com/p/3568484680219781?f=rss)
-* **ChatGPT语音模式与文本界面整合** - [查看原文](https://techcrunch.com/2025/11/25/chatgpts-voice-mode-is-no-longer-a-separate-interface/)
+* **英伟达与迈克尔·伯里就AI泡沫论展开激烈交锋** - [查看原文](https://www.cnbc.com/2025/11/25/michael-burrys-next-big-short-an-inside-look-at-his-analysis-showing-ai-is-a-bubble.html)
 * **华纳音乐与AI音乐初创公司Suno达成协议并和解诉讼** - [查看原文](https://techcrunch.com/2025/11/25/warner-music-signs-deal-with-ai-music-startup-suno-settles-lawsuit/)
-* **沙特阿美与Pasqal推出中东首台工业量子计算机** - [查看原文](https://finance.yahoo.com/news/aramco-pasqal-launch-middle-east-175818281.html)
+* **华为发布开源AI容器技术Flex:ai，优化算力利用率** - [查看原文](https://36kr.com/p/3568501130460297?f=rss)
+* **黑芝麻智能推出SesameX平台，打造机器人"通用大脑"** - [查看原文](https://36kr.com/p/3568484680219781?f=rss)
+* **OpenAI和Perplexity推出AI购物助手，但初创公司并不担忧** - [查看原文](https://techcrunch.com/2025/11/25/openai-and-perplexity-are-launching-ai-shopping-assistants-but-competing-startups-arent-sweating-it/)
+* **ChatGPT语音模式不再需要单独界面** - [查看原文](https://techcrunch.com/2025/11/25/chatgpts-voice-mode-is-no-longer-a-separate-interface/)
 
 ## 🌏 地缘与宏观 (Geopolitics)
 
-* **特朗普将派特使赴俄罗斯推动乌克兰和平计划** - [查看原文](https://chinese.aljazeera.net/news/2025/11/26/%e7%89%b9%e6%9c%97%e6%99%ae%e5%b0%86%e6%b4%be%e9%81%a3%e9%ab%98%e7%ba%a7%e7%89%b9%e4%bd%bf%e5%89%8d%e5%be%80%e4%bf%84%e7%bd%97%e6%96%af%e4%bb%a5%e6%8e%a8%e5%8a%a8%e6%95%b2%e5%ae%9a%e4%b9%8c%e5%85%8b?traffic_source=rss)
-* **巴勒斯坦人步行返回加沙北部** - [查看原文](https://www.wsj.com/articles/palestinians-flock-back-to-northern-gaza-on-foot-after-hostage-release-breakthrough-3f60e2db)
+* **特朗普将派遣高级特使前往俄罗斯推动乌克兰和平计划** - [查看原文](https://chinese.aljazeera.net/news/2025/11/26/%e7%89%b9%e6%9c%97%e6%99%ae%e5%b0%86%e6%b4%be%e9%81%a3%e9%ab%98%e7%ba%a7%e7%89%b9%e4%bd%bf%e5%89%8d%e5%be%80%e4%bf%84%e7%bd%97%e6%96%af%e4%bb%a5%e6%8e%a8%e5%8a%a8%e6%95%b2%e5%ae%9a%e4%b9%8c%e5%85%8b?traffic_source=rss)
+* **巴勒斯坦人开始返回加沙北部，以色列开放军事区通道** - [查看原文](https://www.wsj.com/articles/palestinians-flock-back-to-northern-gaza-on-foot-after-hostage-release-breakthrough-3f60e2db)
+* **中国房地产巨头万科报告巨额亏损，显示行业危机蔓延** - [查看原文](https://www.wsj.com/articles/even-chinas-property-stalwart-isnt-immune-from-the-crisis-19799863)
 * **海底电缆疑似遭破坏触发北约首次协调响应** - [查看原文](https://www.wsj.com/articles/suspected-sabotage-of-deep-sea-cable-triggers-first-nato-led-response-337119ba)
-* **卢旺达支持的反叛分子进入刚果安全城市** - [查看原文](https://www.wsj.com/articles/rwanda-backed-rebels-enter-congo-safe-haven-city-aid-hub-09fdccb8)
-* **FBI调查敦促美军违抗非法命令的民主党人** - [查看原文](https://chinese.aljazeera.net/news/political/2025/11/26/%e8%81%94%e9%82%a6%e8%b0%83%e6%9f%a5%e5%b1%80%e8%b0%83%e6%9f%a5%e6%95%a6%e4%bf%83%e7%be%8e%e5%86%9b%e8%bf%9d%e6%8a%97%e9%9d%9e%e6%b3%95%e5%91%bd%e4%bb%a4%e7%9a%84%e6%b0%91%e4%b8%bb%e5%85%9a%e4%ba%ba?traffic_source=rss)
-* **意大利支持沙特加入战斗机项目** - [查看原文](https://www.wsj.com/articles/italy-supports-saudi-arabia-joining-gcap-fighter-jet-program-pm-meloni-says-bbd9cec1)
+* **卢旺达支持的反叛分子进入刚果安全城市戈马** - [查看原文](https://www.wsj.com/articles/rwanda-backed-rebels-enter-congo-safe-haven-city-aid-hub-09fdccb8)
 
 ## 💼 商业与创投 (Business & VC)
 
-* **Revolut估值达750亿美元完成重大股权出售** - [查看原文](https://finance.yahoo.com/news/revolut-achieves-75-billion-valuation-181021838.html)
-* **"永久持有"投资者抢购风险投资"僵尸"公司** - [查看原文](https://techcrunch.com/2025/11/25/why-hold-forever-investors-are-snapping-up-venture-capital-zombies/)
-* **Find Your Grind融资500万美元帮助学生探索职业道路** - [查看原文](https://techcrunch.com/2025/11/25/find-your-grind-raises-5m-to-grow-platform-empowering-students-to-explore-unique-career-paths/)
-* **特斯联半年营收增长77%迈入空间智能时代** - [查看原文](https://36kr.com/p/3552360997141633?f=rss)
-* **尊界明年将推6款车型加速豪华市场布局** - [查看原文](https://36kr.com/p/3568510405213318?f=rss)
-* **云鲸中国区负责人王俊刚近期离职** - [查看原文](https://36kr.com/p/3568566627056517?f=rss)
+* **Scripps确认收到Sinclair未经请求的收购要约** - [查看原文](https://www.wsj.com/business/media/scripps-confirms-unsolicited-sinclair-bid-06e3617f?siteid=yhoof2&yptr=yahoo)
+* **特斯联2025年上半年营收增长77%，推进AIoT战略** - [查看原文](https://36kr.com/p/3552360997141633?f=rss)
+* **云鲸智能中国区负责人王俊刚近期离职** - [查看原文](https://36kr.com/p/3568566627056517?f=rss)
+* **尊界品牌明年将推6款车型，加速豪华市场布局** - [查看原文](https://36kr.com/p/3568510405213318?f=rss)
+* **Find Your Grind融资500万美元，帮助学生探索职业道路** - [查看原文](https://techcrunch.com/2025/11/25/find-your-grind-raises-5m-to-grow-platform-empowering-students-to-explore-unique-career-paths/)
+* **"永久持有"型投资者正在收购风险投资"僵尸"公司** - [查看原文](https://techcrunch.com/2025/11/25/why-hold-forever-investors-are-snapping-up-venture-capital-zombies/)
 
 ## 🍿 生活与灵感 (Life & Inspiration)
 
-* **YouTube测试新功能整治混乱首页** - [查看原文](https://techcrunch.com/2025/11/25/youtube-is-working-on-a-feature-that-will-fix-the-messy-home-feed/)
-* **Character AI为儿童推出互动"故事"替代开放式聊天** - [查看原文](https://techcrunch.com/2025/11/25/character-ai-will-offer-interactive-stories-to-kids-instead-of-open-ended-chat/)
-* **KiDoom：在PCB电路板上运行DOOM游戏** - [查看原文](https://www.mikeayles.com/#kidoom)
-* **《疯狂动物城2》预售票房突破3亿元** - [查看原文](https://36kr.com/p/3568482022292609?f=rss)
-* **埃塞俄比亚沉寂12000年火山喷发** - [查看原文](https://chinese.aljazeera.net/news/2025/11/25/%e5%9f%83%e5%a1%9e%e4%bf%84%e6%af%94%e4%ba%9a%e7%81%ab%e5%b1%b1%e5%9c%a8%e6%b2%89%e5%af%8212000%e5%b9%b4%e5%90%8e%e5%96%b7%e5%8f%91%e6%88%91%e4%bb%ac%e7%9b%ae%e5%89%8d%e4%ba%86%e8%a7%a3?traffic_source=rss)
-* **上海地铁试点"站票车厢"提升运力** - [查看原文](https://36kr.com/p/3569142279224197?f=rss)`);
+* **YouTube正在开发新功能以整理混乱的主页feed** - [查看原文](https://techcrunch.com/2025/11/25/youtube-is-working-on-a-feature-that-will-fix-the-messy-home-feed/)
+* **Character AI将为儿童提供互动"故事"而非开放式聊天** - [查看原文](https://techcrunch.com/2025/11/25/character-ai-will-offer-interactive-stories-to-kids-instead-of-open-ended-chat/)
+* **新加坡国家AI计划放弃Meta模型，转向阿里千问** - [查看原文](https://36kr.com/p/3568482022292609?f=rss)
+* **充电宝新规将落地，原3C认证全面失效** - [查看原文](https://36kr.com/p/3569142279224197?f=rss)
+* **AlphaFold未来发展方向：与Google DeepMind诺贝尔奖得主对话** - [查看原文](https://www.technologyreview.com/2025/11/24/1128322/whats-next-for-alphafold-a-conversation-with-a-google-deepmind-nobel-laureate/)
+* **维生素D对人体作用的新发现** - [查看原文](https://www.technologyreview.com/2025/11/21/1128206/vitamin-d-bodies-bone-health-immune/)
 
-            // 2. 日期跳转逻辑
+---
+**分析师洞察**：今日市场焦点集中在英伟达与知名投资者迈克尔·伯里关于AI泡沫的公开辩论，这场争论可能影响整个科技板块情绪。地缘政治方面，美俄乌克兰和谈出现新动向，而中国房地产危机持续深化。科技领域，AI应用正从通用型向垂直场景深度渗透，各大公司加速商业化布局。`);
+
+            // 2. 日期跳转
             function gotoDate() {
                 const date = document.getElementById('datePicker').value;
-                if(date) {
-                    // 跳转到 archives 目录下的对应文件
-                    window.location.href = `archives/${date}.html`;
-                }
+                if(date) window.location.href = `archives/${date}.html`;
             }
 
-            // 3. 音乐播放逻辑
+            // 3. 智能曲库系统
+            const playlist = ["https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3", "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3", "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d0.mp3", "https://cdn.pixabay.com/audio/2021/11/24/audio_82339594f7.mp3", "https://cdn.pixabay.com/audio/2022/03/23/audio_07963dc558.mp3"]; // 注入 Python 定义的曲库
             const audio = document.getElementById('bgMusic');
             const icon = document.getElementById('musicIcon');
-            
-            // 尝试自动播放
-            let playPromise = audio.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    // 自动播放成功
-                    icon.innerHTML = '🎵'; 
-                }).catch(error => {
-                    // 自动播放被阻止，显示静音图标，等待用户点击
+            const status = document.getElementById('musicStatus');
+            let currentTrackIndex = Math.floor(Math.random() * playlist.length); // 随机开始
+
+            function loadAndPlay(index) {
+                if (index >= playlist.length) index = 0;
+                currentTrackIndex = index;
+                audio.src = playlist[currentTrackIndex];
+                
+                // 尝试播放
+                audio.play().then(() => {
+                    icon.innerHTML = '🎵';
+                    status.innerHTML = `🎵 正在播放: 第 ${currentTrackIndex + 1} 首 (共 ${playlist.length} 首)`;
+                }).catch(e => {
                     icon.innerHTML = '🔇';
-                    console.log("Autoplay prevented by browser, waiting for interaction.");
+                    status.innerHTML = '💤 音乐已就绪 (点击右下角播放)';
                 });
             }
 
+            // 初始化加载一首
+            loadAndPlay(currentTrackIndex);
+
+            // 自动连播功能：一首结束后，放下一首
+            audio.addEventListener('ended', () => {
+                playNext();
+            });
+
+            // 切歌
+            function playNext() {
+                let nextIndex = currentTrackIndex + 1;
+                loadAndPlay(nextIndex);
+            }
+
+            // 开关控制
             function toggleMusic() {
                 if (audio.paused) {
                     audio.play();
                     icon.innerHTML = '🎵';
+                    status.innerHTML = `🎵 正在播放: 第 ${currentTrackIndex + 1} 首`;
                 } else {
                     audio.pause();
                     icon.innerHTML = '🔇';
+                    status.innerHTML = '💤 音乐已暂停';
                 }
             }
         </script>
