@@ -1,0 +1,38 @@
+name: Update Daily News
+
+on:
+  schedule:
+    # 北京时间 8:00 = UTC 时间 0:00
+    - cron: '0 0 * * *'
+  workflow_dispatch: # 允许手动点按钮运行测试
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: pip install feedparser openai pytz requests
+
+      - name: Run script
+        env:
+          LLM_API_KEY: ${{ secrets.LLM_API_KEY }}
+        run: python main.py
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git commit -m "Update daily news" || exit 0
+          git push
