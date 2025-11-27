@@ -4,163 +4,202 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>历史回顾: 2025-11-27</title>
-        <!-- iOS 优化 -->
+        <title>回顾: 2025-11-27</title>
         <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2965/2965879.png">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-        
         <script src="https://cdn.tailwindcss.com"></script>
         <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
         <style>
-            body { font-family: 'Noto Sans SC', sans-serif; background-color: #0f172a; color: #e2e8f0; padding-bottom: 80px; }
+            body { font-family: 'Noto Sans SC', sans-serif; background-color: #0f172a; color: #e2e8f0; padding-bottom: 100px; -webkit-tap-highlight-color: transparent; }
             .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-            a { color: #38bdf8; transition: all 0.2s; }
-            a:hover { color: #7dd3fc; text-decoration: underline; }
-            h2 { color: #facc15; font-size: 1.4rem; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
-            li { margin-bottom: 1rem; line-height: 1.7; }
-            strong { color: #e2e8f0; font-weight: 600; }
+            a { color: #38bdf8; }
+            h2 { color: #facc15; font-size: 1.4rem; font-weight: bold; margin-top: 2rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
+            li { margin-bottom: 1rem; line-height: 1.6; }
+            strong { color: #fff; font-weight: 600; }
             
-            /* 播放器样式优化 */
-            .music-player { position: fixed; bottom: 20px; right: 20px; z-index: 50; display: flex; gap: 8px; align-items: center; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); padding: 5px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.1); }
-            .music-btn { width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(255,255,255,0.1); transition: all 0.2s; cursor: pointer; }
-            .music-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.2); }
+            /* --- 播放器暴力修复样式 --- */
+            .music-player { 
+                position: fixed; bottom: 25px; right: 25px; z-index: 9999; 
+                display: flex; gap: 12px; align-items: center; 
+                background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); 
+                padding: 8px 12px; border-radius: 50px; 
+                border: 1px solid rgba(255,255,255,0.2); 
+                box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            }
+            .music-btn { 
+                width: 44px; height: 44px; 
+                display: flex; align-items: center; justify-content: center; 
+                border-radius: 50%; background: rgba(255,255,255,0.15); 
+                font-size: 20px; cursor: pointer; touch-action: manipulation;
+            }
+            .music-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.95); }
+            #musicStatus { font-size: 12px; max-width: 150px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
         </style>
     </head>
-    <body class="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <body class="min-h-screen bg-slate-900">
 
-        <div class="max-w-4xl mx-auto p-4 md:p-8">
-            <header class="mb-8 text-center pt-8">
-                <h1 class="text-3xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-2">
+        <div class="max-w-4xl mx-auto p-4 md:p-8 pt-10">
+            <header class="mb-6 text-center">
+                <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-1">
                     每日全球深度早报
                 </h1>
-                <p class="text-slate-400 text-xs md:text-sm tracking-widest uppercase">
-                    2025-11-27 | 生成时间: 08:15:34
-                </p>
+                <p class="text-slate-500 text-xs uppercase tracking-widest">2025-11-27 | 08:38:28</p>
             </header>
 
-            <div class="glass-panel rounded-xl p-4 mb-6 flex justify-between items-center flex-wrap gap-4">
-                <div class="text-xs md:text-sm text-slate-300 flex items-center overflow-hidden whitespace-nowrap">
-                    <span id="musicStatus" class="animate-pulse">🎵 正在连接高雅音乐库...</span>
-                </div>
-                <div class="flex items-center gap-2 ml-auto">
-                    <input type="date" id="datePicker" min="2025-11-26" class="bg-slate-700 text-white border border-slate-600 rounded px-2 py-1 text-xs focus:outline-none">
-                    <button onclick="gotoDate()" class="bg-blue-600 text-white text-xs px-3 py-1 rounded">回顾</button>
-                    <a href="index.html" class="ml-2 text-xs text-slate-400 underline">今日</a>
+            <div class="glass-panel rounded-xl p-3 mb-6 flex justify-between items-center text-xs">
+                <div id="topStatus" class="text-slate-400">🎵 点击右下角播放音乐</div>
+                <div class="flex gap-2">
+                    <input type="date" id="datePicker" min="2025-11-26" class="bg-slate-700 text-white rounded px-2 py-1">
+                    <button onclick="gotoDate()" class="bg-blue-600 text-white px-3 py-1 rounded">回顾</button>
+                    <a href="index.html" class="ml-2 text-slate-400 underline self-center">今日</a>
                 </div>
             </div>
 
-            <div class="glass-panel rounded-2xl p-5 md:p-10 shadow-2xl">
+            <div class="glass-panel rounded-2xl p-5 md:p-8 shadow-2xl">
                 <div id="content" class="prose prose-invert max-w-none text-sm md:text-base"></div>
             </div>
 
-            <footer class="mt-10 text-center text-slate-600 text-xs pb-10">
-                Powered by DeepSeek AI & GitHub Actions
+            <footer class="mt-8 text-center text-slate-600 text-xs">
+                Powered by DeepSeek AI
             </footer>
         </div>
 
-        <audio id="bgMusic">您的浏览器不支持音频播放。</audio>
+        <!-- 音频标签：增加 preload 属性 -->
+        <audio id="bgMusic" preload="auto"></audio>
         
-        <div class="music-player shadow-xl">
-            <button class="music-btn text-lg" onclick="playNext()" title="切歌">⏭️</button>
-            <button class="music-btn text-xl" onclick="toggleMusic()" title="播放/暂停">
-                <span id="musicIcon">🔇</span>
+        <!-- 悬浮播放器 -->
+        <div class="music-player">
+            <div id="musicStatus" class="text-white hidden md:block mr-2">准备就绪</div>
+            <button class="music-btn" onclick="playNext()" title="下一首">⏭️</button>
+            <button class="music-btn" onclick="toggleMusic()" title="播放/暂停">
+                <span id="musicIcon">🔇</span> <!-- 默认显示静音 -->
             </button>
         </div>
 
         <script>
-            document.getElementById('content').innerHTML = marked.parse(`# 全球深度早报
+            document.getElementById('content').innerHTML = marked.parse(`# 全球早报
 
-## 📈 市场与财富 (Markets & Wealth)
-* **戴尔科技股价大幅波动，盘中交易表现活跃** - [查看原文](https://www.cnbc.com/2025/11/26/stocks-making-the-biggest-moves-midday-dell-arwr-urbn.html)
-* **迪尔公司、惠普和欧特克在盘前交易中异动明显** - [查看原文](https://www.cnbc.com/2025/11/26/stocks-making-the-biggest-moves-premarket-de-dell-hpq-adsk.html)
-* **惠普与戴尔科技盘后交易波动显著** - [查看原文](https://www.cnbc.com/2025/11/25/stocks-making-the-biggest-moves-after-hours-hpq-dell-urbn.html)
-* **Abercrombie & Fitch与英伟达等股票午盘异动** - [查看原文](https://www.cnbc.com/2025/11/25/stocks-making-the-biggest-moves-midday-anf-nvda-coin-sym-more.html)
-* **万科巨亏显示中国房地产危机蔓延** - [查看原文](https://www.wsj.com/articles/even-chinas-property-stalwart-isnt-immune-from-the-crisis-19799863)
+## 📈 市场与财富
+* **戴尔、Arrowhead Pharmaceuticals、Urban Outfitters等股票午盘波动最大** - [链接](https://www.cnbc.com/2025/11/26/stocks-making-the-biggest-moves-midday-dell-arwr-urbn.html)
+* **迪尔、戴尔科技、惠普、欧特克等股票盘前波动最大** - [链接](https://www.cnbc.com/2025/11/26/stocks-making-the-biggest-moves-premarket-de-dell-hpq-adsk.html)
+* **惠普公司、戴尔科技、Urban Outfitters等股票盘后波动最大** - [链接](https://www.cnbc.com/2025/11/25/stocks-making-the-biggest-moves-after-hours-hpq-dell-urbn.html)
+* **2025年美国已有49家AI初创公司融资超1亿美元** - [链接](https://techcrunch.com/2025/11/26/here-are-the-49-us-ai-startups-that-have-raised-100m-or-more-in-2025/)
+* **电池回收公司Redwood Materials在融资3.5亿美元后裁员5%** - [链接](https://techcrunch.com/2025/11/26/redwood-materials-reportedly-cuts-5-of-staff-after-350m-raise/)
+* **中国头部房企万科报告巨额亏损，显示房地产困境加剧** - [链接](https://www.wsj.com/articles/even-chinas-property-stalwart-isnt-immune-from-the-crisis-19799863)
 
-## 🚀 硅谷与芯片 (Tech & AI)
-* **英伟达内部备忘录点名反驳迈克尔·伯里的AI泡沫论** - [查看原文](https://www.cnbc.com/2025/11/25/nvidia-pushes-back-on-charges-that-ai-investment-is-a-bubble.html)
-* **2025年美国49家AI初创公司融资超1亿美元** - [查看原文](https://techcrunch.com/2025/11/26/here-are-the-49-us-ai-startups-that-have-raised-100m-or-more-in-2025/)
-* **OpenAI称青少年绕过安全功能后使用ChatGPT策划自杀** - [查看原文](https://techcrunch.com/2025/11/26/openai-claims-teen-circumvented-safety-features-before-suicide-that-chatgpt-helped-plan/)
-* **红木材料在融资3.5亿美元后裁员5%** - [查看原文](https://techcrunch.com/2025/11/26/redwood-materials-reportedly-cuts-5-of-staff-after-350m-raise/)
-* **前特斯拉Optimus团队成员加入小米机器人项目** - [查看原文](https://36kr.com/p/3570555840674690?f=rss)
+## 🚀 硅谷与芯片
+* **英伟达在反驳AI泡沫指控的秘密备忘录中提及迈克尔·伯里** - [链接](https://www.cnbc.com/2025/11/25/nvidia-pushes-back-on-charges-that-ai-investment-is-a-bubble.html)
+* **迈克尔·伯里的下一个“大空头”：深度解析其证明AI是泡沫的分析** - [链接](https://www.cnbc.com/2025/11/25/michael-burrys-next-big-short-an-inside-look-at-his-analysis-showing-ai-is-a-bubble.html)
+* **AI炒作指数：人们对AI“糟粕”内容欲罢不能** - [链接](https://www.technologyreview.com/2025/11/26/1128353/the-ai-hype-index-the-people-cant-get-enough-of-ai-slop/)
+* **OpenAI称青少年在自杀前绕过了安全功能，ChatGPT曾协助制定计划** - [链接](https://techcrunch.com/2025/11/26/openai-claims-teen-circumvented-safety-features-before-suicide-that-chatgpt-helped-plan/)
+* **AlphaFold的未来：与谷歌DeepMind诺贝尔奖得主的对话** - [链接](https://www.technologyreview.com/2025/11/24/1128322/whats-next-for-alphafold-a-conversation-with-a-google-deepmind-nobel-laureate/)
+* **前特斯拉Optimus团队成员加入小米** - [链接](https://36kr.com/p/3570555840674690?f=rss)
 
-## 🌏 地缘与宏观 (Geopolitics)
-* **巴勒斯坦民众开始返回加沙北部，人质释放僵局被打破** - [查看原文](https://www.wsj.com/articles/palestinians-flock-back-to-northern-gaza-on-foot-after-hostage-release-breakthrough-3f60e2db)
-* **海底电缆遭破坏引发北约首次协调响应** - [查看原文](https://www.wsj.com/articles/suspected-sabotage-of-deep-sea-cable-triggers-first-nato-led-response-337119ba)
-* **台湾公布400亿美元国防预算应对中国** - [查看原文](https://chinese.aljazeera.net/news/2025/11/26/%e5%8f%b0%e6%b9%be%e5%85%ac%e5%b8%83400%e4%ba%bf%e7%be%8e%e5%85%83%e5%9b%bd%e9%98%b2%e9%a2%84%e7%ae%97%e4%bb%a5%e5%af%b9%e6%8a%97%e4%b8%ad%e5%9b%bd?traffic_source=rss)
-* **中印因阿鲁纳恰尔邦问题再度紧张** - [查看原文](https://chinese.aljazeera.net/news/2025/11/27/%e4%b8%ad%e5%8d%b0%e5%9b%a0%e9%98%bf%e9%b2%81%e7%ba%b3%e6%81%b0%e5%b0%94%e9%82%a6%e9%97%ae%e9%a2%98%e5%86%8d%e6%ac%a1%e5%8f%91%e7%94%9f%e4%ba%89%e7%ab%af?traffic_source=rss)
+## 🌏 地缘与宏观
+* **巴勒斯坦人步行涌回加沙北部** - [链接](https://www.wsj.com/articles/palestinians-flock-back-to-northern-gaza-on-foot-after-hostage-release-breakthrough-3f60e2db)
+* **获释以色列人质体内仍残留10月7日袭击的弹片** - [链接](https://www.wsj.com/articles/freed-israeli-hostages-still-had-shrapnel-in-their-bodies-from-oct-7-attack-3de8cd1e)
+* **海底电缆疑似遭破坏，触发北约首次主导响应** - [链接](https://www.wsj.com/articles/suspected-sabotage-of-deep-sea-cable-triggers-first-nato-led-response-337119ba)
+* **卢旺达支持的叛军进入刚果安全城市戈马** - [链接](https://www.wsj.com/articles/rwanda-backed-rebels-enter-congo-safe-haven-city-aid-hub-09fdccb8)
+* **可卡因资助的帮派在哥伦比亚和平协议多年后再度引发动荡** - [链接](https://www.wsj.com/articles/cocaine-funded-gangs-shake-colombia-years-after-peace-pact-a45a28da)
+* **香港火灾已致44人遇难** - [链接](https://36kr.com/p/3570555840674690?f=rss)
 
-## 💼 商业与创投 (Business & VC)
-* **北欧初创企业融资规模扩大，成效显著** - [查看原文](https://techcrunch.com/video/nordic-founders-are-taking-bigger-swings-and-its-paying-off/)
-* **JustiGuide利用AI帮助移民导航美国移民系统** - [查看原文](https://techcrunch.com/2025/11/26/justiguide-wants-to-use-ai-to-help-people-navigate-the-u-s-immigration-system/)
-* **科兴生物在巴西获7亿美元疫苗合同，创中国疫苗最大国际订单** - [查看原文](https://36kr.com/p/3570555840674690?f=rss)
-* **唯可生物获近亿元A轮融资，推进CGT安全性评价服务** - [查看原文](https://36kr.com/p/3569589640805510?f=rss)
-* **惠普宣布全球裁员计划** - [查看原文](https://36kr.com/p/3570555840674690?f=rss)
+## 💼 商业与创投
+* **科兴生物在巴西拿下7亿美元合同，创中国疫苗最大金额国际订单** - [链接](https://36kr.com/p/3570555840674690?f=rss)
+* **提供CGT产品安全性评价服务，「唯可生物」获近亿元A轮融资** - [链接](https://36kr.com/p/3569589640805510?f=rss)
+* **2025年中国出海零售品牌调研报告** - [链接](https://36kr.com/p/3569573862439815?f=rss)
+* **北欧创业者正进行更大胆的尝试并获得回报** - [链接](https://techcrunch.com/video/nordic-founders-are-taking-bigger-swings-and-its-paying-off/)
+* **JustiGuide希望利用AI帮助人们 navigate 美国移民系统** - [链接](https://techcrunch.com/2025/11/26/justiguide-wants-to-use-ai-to-help-people-navigate-the-u-s-immigration-system/)
+* **美国电吉他品牌「Fender」中国首开体验空间，营收增速已超两位数** - [链接](https://36kr.com/p/3548417282732163?f=rss)
 
-## 🍿 生活与灵感 (Life & Inspiration)
-* **研究发现青春期可能持续至32岁，大脑发育有五个关键阶段** - [查看原文](https://chinese.aljazeera.net/medicine/2025/11/26/%e9%9d%92%e6%98%a5%e6%9c%9f%e4%bc%9a%e6%8c%81%e7%bb%ad%e5%88%b032%e5%b2%81%e5%90%97%e7%a7%91%e5%ad%a6%e5%ae%b6%e6%8f%ad%e7%a4%ba%e5%a4%a7%e8%84%91%e7%9a%84%e4%ba%94%e4%b8%aa%e5%8f%91%e5%b1%95?traffic_source=rss)
-* **美国电吉他品牌Fender在中国开设首家体验空间** - [查看原文](https://36kr.com/p/3548417282732163?f=rss)
-* **反社交媒体时代，年轻人通过"盲盒饭局"重建人际关系** - [查看原文](https://36kr.com/p/3568209254562693?f=rss)
-* **香港高层住宅火灾已致44人遇难** - [查看原文](https://chinese.aljazeera.net/news/2025/11/26/%e9%a6%99%e6%b8%af%e9%ab%98%e5%b1%82%e4%bd%8f%e5%ae%85%e6%a5%bc%e5%8f%91%e7%94%9f%e7%81%ab%e7%81%be%e9%80%a0%e6%88%90%e8%87%b3%e5%b0%9113%e4%ba%ba%e6%ad%bb%e4%ba%a1?traffic_source=rss)
-
----
-**分析师洞察**：今日市场焦点集中在AI概念股的多空博弈，英伟达与迈克尔·伯里的观点交锋凸显行业分歧。地缘政治方面，加沙局势出现突破性进展，而台海与中印边境紧张态势值得持续关注。创投市场显示AI与生物科技仍是资本重点布局领域。`);
+## 🍿 生活与灵感
+* **反社交媒体时代，在「盲盒饭局」中重建关系的年轻人** - [链接](https://36kr.com/p/3568209254562693?f=rss)
+* **罗永浩喊话华杉公开道歉，无人应声** - [链接](https://36kr.com/p/3570555840674690?f=rss)
+* **飞机锁座变相收费，10家航空公司被约谈** - [链接](https://36kr.com/p/3570555840674690?f=rss)
+* **星动纪元与联合国工业发展组织达成战略合作** - [链接](https://36kr.com/p/3569792504626311?f=rss)
+* **阿里千问进入电脑桌面，覆盖超1亿用户** - [链接](https://36kr.com/p/3569792504626311?f=rss)
+* **ChatGPT：关于这款AI聊天机器人你需要知道的一切** - [链接](https://techcrunch.com/2025/11/26/chatgpt-everything-to-know-about-the-ai-chatbot/)`);
 
             function gotoDate() {
                 const date = document.getElementById('datePicker').value;
                 if(date) window.location.href = `archives/${date}.html`;
             }
 
-            // --- 音乐控制逻辑 ---
-            const playlist = ["https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3", "https://cdn.pixabay.com/audio/2021/11/24/audio_82339594f7.mp3", "https://cdn.pixabay.com/audio/2022/02/07/audio_6583995eb2.mp3", "https://cdn.pixabay.com/audio/2021/09/06/audio_9c04a27542.mp3", "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d0.mp3", "https://cdn.pixabay.com/audio/2020/05/27/audio_823a31e847.mp3", "https://cdn.pixabay.com/audio/2021/11/25/audio_9158359265.mp3", "https://cdn.pixabay.com/audio/2021/11/01/audio_0346bf2826.mp3"];
+            // --- 修复版音乐逻辑 ---
+            const playlist = ["https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73467.mp3", "https://cdn.pixabay.com/audio/2021/11/24/audio_82339594f7.mp3", "https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d0.mp3", "https://cdn.pixabay.com/audio/2021/09/06/audio_9c04a27542.mp3"];
             const audio = document.getElementById('bgMusic');
             const icon = document.getElementById('musicIcon');
             const status = document.getElementById('musicStatus');
+            const topStatus = document.getElementById('topStatus');
+            
             let currentIndex = Math.floor(Math.random() * playlist.length);
+            let isPlaying = false;
 
-            function loadTrack(index) {
-                if (index >= playlist.length) index = 0;
-                currentIndex = index;
-                audio.src = playlist[currentIndex];
-                audio.volume = 0.6; // 默认音量 60% 防止吓人
-            }
+            // 初始化加载，但不自动播放（iOS不允许）
+            audio.src = playlist[currentIndex];
+            audio.load(); // 预加载
 
-            function playMusic() {
-                audio.play().then(() => {
-                    icon.innerHTML = '⏸️'; // 显示暂停图标
-                    status.innerHTML = `🎹 正在播放: 精选辑 No.${currentIndex + 1}`;
-                    status.classList.remove('animate-pulse');
-                }).catch(e => {
-                    console.log("Auto-play blocked");
-                    icon.innerHTML = '🔇';
-                    status.innerHTML = '💤 点击右下角播放音乐';
-                });
+            function updateUI(state) {
+                if (state === 'playing') {
+                    icon.innerHTML = '⏸️'; // 显示暂停键
+                    status.innerHTML = '🎵 正在播放...';
+                    topStatus.innerHTML = '🎹 沉浸模式: 开启';
+                    isPlaying = true;
+                } else if (state === 'paused') {
+                    icon.innerHTML = '▶️'; // 显示播放键
+                    status.innerHTML = '💤 已暂停';
+                    topStatus.innerHTML = '💤 点击右下角继续';
+                    isPlaying = false;
+                } else if (state === 'loading') {
+                    icon.innerHTML = '⏳';
+                    status.innerHTML = '📡 缓冲中...';
+                }
             }
 
             function playNext() {
-                loadTrack(currentIndex + 1);
-                playMusic();
+                updateUI('loading');
+                currentIndex = (currentIndex + 1) % playlist.length;
+                audio.src = playlist[currentIndex];
+                audio.load();
+                
+                // 必须在 promise 中处理
+                audio.play().then(() => {
+                    updateUI('playing');
+                }).catch(e => {
+                    console.log("Play error:", e);
+                    updateUI('paused');
+                });
             }
 
             function toggleMusic() {
                 if (audio.paused) {
-                    // 如果还没源，先加载
-                    if (!audio.src) loadTrack(currentIndex);
-                    playMusic();
+                    updateUI('loading');
+                    // 尝试播放
+                    let playPromise = audio.play();
+                    if (playPromise !== undefined) {
+                        playPromise.then(() => {
+                            updateUI('playing');
+                        }).catch(error => {
+                            console.log("Play failed, retrying load");
+                            // 暴力重载
+                            audio.load();
+                            audio.play().then(() => updateUI('playing'));
+                        });
+                    }
                 } else {
                     audio.pause();
-                    icon.innerHTML = '▶️';
-                    status.innerHTML = '💤 音乐已暂停';
+                    updateUI('paused');
                 }
             }
 
-            // 初始化
-            loadTrack(currentIndex);
-            
-            // 自动连播
             audio.addEventListener('ended', playNext);
+            audio.addEventListener('error', function(e) {
+                console.log("Error loading audio", e);
+                status.innerHTML = "❌ 加载失败，切歌中...";
+                setTimeout(playNext, 1000); // 1秒后自动切歌
+            });
+
         </script>
     </body>
     </html>
