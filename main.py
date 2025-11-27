@@ -10,64 +10,53 @@ import random
 API_BASE = "https://api.deepseek.com" 
 MODEL_NAME = "deepseek-chat"
 
-# --- 2. 🎵 旗舰版曲库 (完整版古典/钢琴/LoFi，单曲3分钟+) ---
-# 使用了更稳定的 CDN 源，确保是完整的背景音乐
+# --- 2. 🎵 完整版古典/Lo-Fi 曲库 ---
 MUSIC_PLAYLIST = [
-    # 肖邦 - 夜曲 (经典静心)
-    "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", 
-    # 德彪西 - 月光 (极致优雅)
-    "https://cdn.pixabay.com/audio/2022/10/14/audio_9939f792cb.mp3",
-    # 极简主义钢琴 (现代商业感)
-    "https://cdn.pixabay.com/audio/2021/09/06/audio_9c04a27542.mp3",
-    # Lo-Fi Study (专注阅读)
-    "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3",
-    # 电影感氛围 (深度思考)
-    "https://cdn.pixabay.com/audio/2021/11/01/audio_0346bf2826.mp3",
+    "https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", # 肖邦夜曲
+    "https://cdn.pixabay.com/audio/2022/10/14/audio_9939f792cb.mp3", # 德彪西月光
+    "https://cdn.pixabay.com/audio/2021/09/06/audio_9c04a27542.mp3", # 极简钢琴
+    "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3", # Lo-Fi 学习
+    "https://cdn.pixabay.com/audio/2021/11/01/audio_0346bf2826.mp3", # 电影感
 ]
 
-# --- 3. 资讯数据源 (分为“快讯”和“深度”两类) ---
+# --- 3. 资讯数据源 ---
 RSS_SOURCES = {
-    # === 🚀 深度/长文源 (专门用于提取深度研报) ===
-    # 虎嗅 (商业深度): 往往包含长篇企业分析
+    # === 🚀 深度源 (用于最后的压轴板块) ===
     "深度-虎嗅": "https://www.huxiu.com/rss/0.xml",
-    # 36氪 (特写): 关注行业趋势
     "深度-36氪": "https://36kr.com/feed",
-    # The Verge Features (长篇技术特写)
     "深度-TheVerge": "https://www.theverge.com/rss/features/index.xml",
-    # 哈佛商业评论 (管理与商业)
     "深度-HBR": "https://feeds.hbr.org/harvardbusiness",
 
-    # === ⚡ 日常快讯源 ===
+    # === ⚡ 快讯源 (用于前5个常规板块) ===
     "快讯-华尔街日报": "https://feeds.a.dj.com/rss/RSSWorldNews.xml",
     "快讯-CNBC": "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664",
     "快讯-MIT科技评论": "https://www.technologyreview.com/feed/",
     "快讯-联合早报": "https://www.zaobao.com.sg/rss/realtime/world",
     "快讯-TechCrunch": "https://techcrunch.com/feed/",
+    "快讯-新浪美股": "https://rss.sina.com.cn/roll/finance/usstock/index.xml",
 }
 
 def fetch_rss_data():
     combined_content = ""
-    print(">>> 正在全网搜集信息 (含深度报道)...")
+    print(">>> 正在全网搜集信息 (扩大抓取量)...")
     
     for name, url in RSS_SOURCES.items():
         try:
             feed = feedparser.parse(url)
             if not feed.entries: continue
             
-            # 策略：如果是“深度”源，取前 3 条；如果是“快讯”源，取前 5 条
-            # 这样保证 Context 不会爆，同时侧重不同
-            limit = 3 if "深度" in name else 5
+            # 策略调整：为了保证常规板块内容够多，大幅增加快讯抓取量
+            # 深度源取前 3 条，快讯源取前 10 条
+            limit = 3 if "深度" in name else 10
             entries = feed.entries[:limit]
             
             combined_content += f"\n【信源：{name}】\n"
             for entry in entries:
                 title = entry.title.replace('\n', ' ')
-                # 截取更多简介以便 AI 判断深度
                 summary = entry.get('summary', '')[:200].replace('\n', '') 
                 link = entry.link
-                # 加上发布时间，辅助 AI 判断是否是最近一周
                 published = entry.get('published', '')
-                combined_content += f"- 标题: {title}\n  时间: {published}\n  简介: {summary}\n  链接: {link}\n"
+                combined_content += f"- {title} | {published} | {summary} ({link})\n"
                 
         except Exception as e:
             print(f"❌ 抓取失败: {name} - {e}")
@@ -92,40 +81,46 @@ def ai_summarize(content):
     {content}
 
     【输出强制要求】
-    请严格按照以下 **6个版块** 生成 Markdown 内容：
+    请严格按照以下顺序和要求生成 Markdown 内容（不要遗漏任何板块）：
+
+    ## 📈 市场与财富 (Markets & Wealth)
+    *   **数量**：5-8 条。
+    *   **内容**：股市、汇率、大宗商品、企业财报、创始人动态。
+
+    ## 🚀 硅谷与芯片 (Tech & AI)
+    *   **数量**：5-8 条。
+    *   **内容**：AI大模型、芯片巨头、硬科技新闻。
+
+    ## 🌏 地缘与宏观 (Geopolitics)
+    *   **数量**：5-8 条。
+    *   **内容**：国际局势、大国博弈、央行政策。
+
+    ## 💼 商业与创投 (Business & VC)
+    *   **数量**：5-8 条。
+    *   **内容**：投融资、IPO、行业并购。
+
+    ## 🍿 生活与灵感 (Life & Inspiration)
+    *   **数量**：3-5 条。
+    *   **内容**：新奇产品、影视娱乐、轻松话题。
+
+    --- 
+    (以下为压轴板块)
 
     ## 🧠 深度研报 (Deep Dive)
-    *   **筛选标准**：从【深度】信源中，挑选 **3篇** 最具价值的长文/分析报道。
-    *   **内容要求**：关注人物传记、企业兴衰复盘、行业底层逻辑研究、重大技术变革。
-    *   **时间范围**：优先选择过去1周内发布的文章，**严禁选择毫无信息量的短快讯**。
+    *   **筛选标准**：从【深度】信源中，挑选 **3篇** 最具价值的长文。
+    *   **位置**：必须放在文章最后。
     *   **格式**：
         ### 1. [中文标题] (原文: 媒体名)
-        > **核心洞察**：用50-80字深度概括文章的核心逻辑或结论。
+        > **核心洞察**：用50-80字深度概括文章的核心逻辑。
         > [🔗 点击阅读深度全文](链接地址)
 
-    ## 📈 市场与财富
-    *   挑选 5 条关于股市、汇率、大宗商品、财报的关键快讯。
-
-    ## 🚀 硅谷与芯片
-    *   挑选 5 条 AI、芯片、硬科技新闻。
-
-    ## 🌏 地缘与宏观
-    *   挑选 5 条国际局势、政策新闻。
-
-    ## 💼 商业与创投
-    *   挑选 4 条投融资、IPO新闻。
-
-    ## 🍿 生活与灵感
-    *   挑选 3 条轻松的科技、娱乐或新产品新闻。
-
     【全局规则】
-    1. **翻译**：所有英文标题和简介必须翻译成**专业、信达雅的中文**。
+    1. **翻译**：所有英文标题和简介必须翻译成**专业中文**。
     2. **快讯格式**：`* **标题** - [查看原文](链接)`
     3. **去重**：深度研报中的文章，不要在快讯板块重复出现。
     """
 
     try:
-        # 增加 max_tokens 防止截断深度内容
         response = client.chat.completions.create(
             model=MODEL_NAME,
             messages=[{"role": "user", "content": prompt}],
@@ -161,7 +156,7 @@ def get_html_template(content, current_date, update_time, is_archive=False):
             .glass-panel {{ background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }}
             a {{ color: #38bdf8; }}
             
-            /* 深度研报特别样式 */
+            /* 深度研报特别样式 (压轴) */
             h3 {{ color: #fff; font-size: 1.1rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; }}
             blockquote {{ border-left: 4px solid #facc15; padding-left: 1rem; color: #94a3b8; font-style: italic; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 0 8px 8px 0; }}
             
@@ -242,7 +237,7 @@ def get_html_template(content, current_date, update_time, is_archive=False):
             let currentIndex = Math.floor(Math.random() * playlist.length);
 
             audio.src = playlist[currentIndex];
-            // 不自动播放，等待用户点击
+            // 不自动播放
 
             function updateUI(state) {{
                 if (state === 'playing') {{
@@ -269,7 +264,6 @@ def get_html_template(content, current_date, update_time, is_archive=False):
                 if (audio.paused) {{
                     updateUI('loading');
                     audio.play().then(() => updateUI('playing')).catch(e => {{
-                        // 兼容性处理：如果播放失败，重新加载
                         audio.load();
                         audio.play().then(() => updateUI('playing'));
                     }});
