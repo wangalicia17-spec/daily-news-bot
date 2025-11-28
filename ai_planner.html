@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Evo • 进化日志</title>
+    <!-- iOS PWA 优化 -->
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2040/2040946.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入图标库 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <!-- 引入烟花特效库 -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap');
+        body { font-family: 'Noto Sans SC', sans-serif; background-color: #f3f4f6; -webkit-tap-highlight-color: transparent; }
+        
+        /* 霓虹渐变背景 */
+        .cyber-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            min-height: 200px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
+        }
+        
+        /* 卡片浮动效果 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .glass-card:active { transform: scale(0.98); }
+
+        /* 状态标签颜色 */
+        .status-planned { @apply bg-slate-100 text-slate-500; }
+        .status-ing { @apply bg-blue-100 text-blue-600 border border-blue-200; }
+        .status-done { @apply bg-green-100 text-green-600 border border-green-200; }
+
+        /* 隐藏滚动条但保留功能 */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* 模态框动画 */
+        .modal { transition: opacity 0.25s ease; }
+        .modal-content { transition: transform 0.25s ease; }
+        body.modal-active { overflow: hidden; }
+        
+        /* 彩蛋按钮动画 */
+        .egg-btn { animation: float 3s ease-in-out infinite; }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 pb-24">
+
+    <!-- 顶部区域 -->
+    <div class="cyber-bg pt-12 px-6 pb-16 relative shadow-lg">
+        <div class="flex justify-between items-center mb-4">
+            <div>
+                <h1 class="text-3xl font-bold text-white tracking-tight">AI Evo <i class="fas fa-rocket text-yellow-300"></i></h1>
+                <p class="text-indigo-100 text-sm mt-1" id="dailyQuote">正在连接神经网络...</p>
+            </div>
+            <!-- 彩蛋按钮 -->
+            <button onclick="triggerEgg()" class="egg-btn w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white backdrop-blur-md border border-white/30">
+                <i class="fas fa-brain"></i>
+            </button>
+        </div>
+        
+        <!-- 统计概览 -->
+        <div class="flex gap-4 mt-6 overflow-x-auto no-scrollbar">
+            <div class="bg-white/20 backdrop-blur-md rounded-xl p-3 min-w-[100px] border border-white/10 text-white">
+                <div class="text-xs opacity-80">累计学习</div>
+                <div class="text-2xl font-bold"><span id="totalCount">0</span> <span class="text-xs font-normal">项</span></div>
+            </div>
+            <div class="bg-white/20 backdrop-blur-md rounded-xl p-3 min-w-[100px] border border-white/10 text-white">
+                <div class="text-xs opacity-80">已掌握</div>
+                <div class="text-2xl font-bold"><span id="doneCount">0</span> <span class="text-xs font-normal">项</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="px-5 -mt-10 relative z-10">
+        
+        <!-- 过滤器 -->
+        <div class="flex gap-2 mb-4 overflow-x-auto no-scrollbar py-2">
+            <button onclick="filterList('all')" class="filter-btn active bg-indigo-600 text-white px-4 py-1.5 rounded-full text-sm shadow-md transition-colors">全部</button>
+            <button onclick="filterList('ing')" class="filter-btn bg-white text-gray-500 px-4 py-1.5 rounded-full text-sm shadow-sm">⚡️ 进化中</button>
+            <button onclick="filterList('planned')" class="filter-btn bg-white text-gray-500 px-4 py-1.5 rounded-full text-sm shadow-sm">📅 计划</button>
+            <button onclick="filterList('done')" class="filter-btn bg-white text-gray-500 px-4 py-1.5 rounded-full text-sm shadow-sm">✅ 已掌握</button>
+        </div>
+
+        <!-- 列表容器 -->
+        <div id="listContainer" class="space-y-4">
+            <!-- JS 动态渲染列表 -->
+        </div>
+
+        <!-- 空状态提示 -->
+        <div id="emptyState" class="hidden text-center py-20 text-gray-400">
+            <i class="fas fa-robot text-4xl mb-3 opacity-50"></i>
+            <p>还没有记录哦，快去开启你的进化之旅吧！</p>
+        </div>
+    </div>
+
+    <!-- 悬浮添加按钮 -->
+    <button onclick="openModal()" class="fixed bottom-8 right-6 w-14 h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-xl flex items-center justify-center text-2xl transition transform hover:scale-110 active:scale-95 z-40">
+        <i class="fas fa-plus"></i>
+    </button>
+
+    <!-- 编辑/添加 模态框 -->
+    <div id="modal" class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center z-50">
+        <div class="modal-overlay absolute w-full h-full bg-black opacity-50" onclick="closeModal()"></div>
+        
+        <div class="modal-content bg-white w-11/12 md:max-w-md mx-auto rounded-2xl shadow-2xl z-50 overflow-y-auto max-h-[90vh] transform scale-95 opacity-0">
+            <div class="p-6">
+                <h3 class="text-xl font-bold text-gray-800 mb-5 flex justify-between">
+                    <span id="modalTitle">🚀 新建学习计划</span>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+                </h3>
+                
+                <form id="planForm" onsubmit="savePlan(event)">
+                    <input type="hidden" id="editId">
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">📅 计划开始日</label>
+                            <input type="date" id="startDate" required class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">🎯 学习内容 (Topic)</label>
+                            <input type="text" id="topic" placeholder="例如：学习 DeepSeek Prompt 技巧" required class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">🛠 AI 工具 (Tools)</label>
+                            <input type="text" id="tools" placeholder="例如：ChatGPT, Midjourney" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">📂 学习文件/链接</label>
+                            <input type="text" id="files" placeholder="PDF名称或教程链接..." class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">💡 学习成果 (Outcome)</label>
+                            <textarea id="result" rows="2" placeholder="记录下你的收获吧..." class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">⚡️ 状态</label>
+                            <select id="status" class="w-full bg-gray-50 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+                                <option value="planned">📅 计划中</option>
+                                <option value="ing">⚡️ 学习中</option>
+                                <option value="done">✅ 学习结束</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex gap-3">
+                        <button type="button" onclick="deletePlan()" id="deleteBtn" class="hidden flex-1 bg-red-50 text-red-600 py-2.5 rounded-xl font-medium text-sm hover:bg-red-100 transition">删除</button>
+                        <button type="submit" class="flex-[2] bg-indigo-600 text-white py-2.5 rounded-xl font-medium text-sm hover:bg-indigo-700 shadow-lg transition">保存记录</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 彩蛋弹窗 -->
+    <div id="eggModal" class="fixed inset-0 flex items-center justify-center z-[60] pointer-events-none opacity-0 transition-opacity duration-300">
+        <div class="bg-black/80 backdrop-blur-md text-white p-6 rounded-2xl max-w-xs text-center transform scale-90 transition-transform duration-300 shadow-2xl border border-indigo-500/50">
+            <div class="text-4xl mb-4">🔮</div>
+            <h3 class="text-lg font-bold mb-2 text-indigo-300">来自未来的讯息</h3>
+            <p id="eggText" class="text-sm leading-relaxed text-gray-200">加载中...</p>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. 数据管理 ---
+        const STORE_KEY = 'ai_evo_data_v1';
+        let plans = JSON.parse(localStorage.getItem(STORE_KEY)) || [];
+        let currentFilter = 'all';
+
+        // 每日一句 (激励语)
+        const quotes = [
+            "昨天的奇迹是今天的科技。",
+            "不要害怕 AI，要害怕不学习 AI 的人。",
+            "你的神经网络今天升级了吗？",
+            "保持饥饿，保持进化。",
+            "代码是魔法，AI 是魔杖。",
+            "种一棵树最好的时间是十年前，其次是现在。"
+        ];
+        document.getElementById('dailyQuote').innerText = quotes[Math.floor(Math.random() * quotes.length)];
+
+        // --- 2. 核心功能：渲染列表 ---
+        function renderList() {
+            const container = document.getElementById('listContainer');
+            const emptyState = document.getElementById('emptyState');
+            container.innerHTML = '';
+            
+            let filteredPlans = plans.filter(p => currentFilter === 'all' || p.status === currentFilter);
+            
+            // 按日期倒序
+            filteredPlans.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+            // 更新统计
+            document.getElementById('totalCount').innerText = plans.length;
+            document.getElementById('doneCount').innerText = plans.filter(p => p.status === 'done').length;
+
+            if (filteredPlans.length === 0) {
+                emptyState.classList.remove('hidden');
+                return;
+            } else {
+                emptyState.classList.add('hidden');
+            }
+
+            filteredPlans.forEach(plan => {
+                const statusConfig = {
+                    'planned': { class: 'status-planned', text: '计划中', icon: 'fa-calendar' },
+                    'ing': { class: 'status-ing', text: '进化中', icon: 'fa-bolt' },
+                    'done': { class: 'status-done', text: '已掌握', icon: 'fa-check' }
+                };
+                const st = statusConfig[plan.status];
+
+                const card = document.createElement('div');
+                card.className = 'glass-card p-4 relative cursor-pointer group';
+                card.onclick = () => openModal(plan.id);
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-xs font-mono text-gray-400 bg-gray-100 px-2 py-0.5 rounded">${plan.startDate}</span>
+                        <span class="text-xs px-2 py-1 rounded-full font-medium flex items-center gap-1 ${st.class}">
+                            <i class="fas ${st.icon}"></i> ${st.text}
+                        </span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-2 leading-tight">${plan.topic}</h3>
+                    
+                    ${plan.tools ? `<div class="mb-2 text-sm text-gray-600"><i class="fas fa-tools w-5 text-indigo-400"></i> ${plan.tools}</div>` : ''}
+                    
+                    ${plan.files ? `<div class="mb-2 text-sm text-gray-600 truncate"><i class="fas fa-folder-open w-5 text-yellow-400"></i> ${plan.files}</div>` : ''}
+                    
+                    ${plan.result ? `
+                        <div class="mt-3 bg-gray-50 p-2 rounded-lg text-sm text-gray-700 border-l-2 border-indigo-400">
+                            <i class="fas fa-lightbulb text-yellow-500 mr-1"></i> ${plan.result}
+                        </div>
+                    ` : ''}
+                    
+                    <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i class="fas fa-pen text-gray-300"></i>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // --- 3. 过滤器逻辑 ---
+        function filterList(type) {
+            currentFilter = type;
+            // 更新按钮样式
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                if (btn.innerText.includes(getFilterText(type)) || (type === 'all' && btn.innerText === '全部')) {
+                    btn.classList.add('bg-indigo-600', 'text-white');
+                    btn.classList.remove('bg-white', 'text-gray-500');
+                } else {
+                    btn.classList.remove('bg-indigo-600', 'text-white');
+                    btn.classList.add('bg-white', 'text-gray-500');
+                }
+            });
+            renderList();
+        }
+
+        function getFilterText(type) {
+            if(type === 'ing') return '进化中';
+            if(type === 'planned') return '计划';
+            if(type === 'done') return '已掌握';
+            return '全部';
+        }
+
+        // --- 4. 增删改逻辑 ---
+        const modal = document.getElementById('modal');
+        const modalContent = document.querySelector('.modal-content');
+
+        function openModal(id = null) {
+            const form = document.getElementById('planForm');
+            const deleteBtn = document.getElementById('deleteBtn');
+            const title = document.getElementById('modalTitle');
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            document.body.classList.add('modal-active');
+            
+            // 简单动画
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
+
+            if (id) {
+                // 编辑模式
+                const plan = plans.find(p => p.id === id);
+                document.getElementById('editId').value = plan.id;
+                document.getElementById('startDate').value = plan.startDate;
+                document.getElementById('topic').value = plan.topic;
+                document.getElementById('tools').value = plan.tools || '';
+                document.getElementById('files').value = plan.files || '';
+                document.getElementById('result').value = plan.result || '';
+                document.getElementById('status').value = plan.status;
+                
+                deleteBtn.classList.remove('hidden');
+                title.innerText = '📝 更新进度';
+            } else {
+                // 新增模式
+                form.reset();
+                document.getElementById('editId').value = '';
+                document.getElementById('startDate').value = new Date().toISOString().split('T')[0]; // 默认今天
+                document.getElementById('status').value = 'planned';
+                
+                deleteBtn.classList.add('hidden');
+                title.innerText = '🚀 新建计划';
+            }
+        }
+
+        function closeModal() {
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+                document.body.classList.remove('modal-active');
+            }, 250);
+        }
+
+        function savePlan(e) {
+            e.preventDefault();
+            const id = document.getElementById('editId').value;
+            const status = document.getElementById('status').value;
+            
+            const newPlan = {
+                id: id ? Number(id) : Date.now(),
+                startDate: document.getElementById('startDate').value,
+                topic: document.getElementById('topic').value,
+                tools: document.getElementById('tools').value,
+                files: document.getElementById('files').value,
+                result: document.getElementById('result').value,
+                status: status
+            };
+
+            if (id) {
+                const index = plans.findIndex(p => p.id == id);
+                plans[index] = newPlan;
+            } else {
+                plans.push(newPlan);
+            }
+
+            localStorage.setItem(STORE_KEY, JSON.stringify(plans));
+            closeModal();
+            renderList();
+
+            // 如果状态是 Done，播放烟花
+            if (status === 'done') {
+                triggerConfetti();
+            }
+        }
+
+        function deletePlan() {
+            const id = document.getElementById('editId').value;
+            if (confirm('确定要删除这条记录吗？')) {
+                plans = plans.filter(p => p.id != id);
+                localStorage.setItem(STORE_KEY, JSON.stringify(plans));
+                closeModal();
+                renderList();
+            }
+        }
+
+        // --- 5. 特效与彩蛋 ---
+        function triggerConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 60 };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+                if (timeLeft <= 0) return clearInterval(interval);
+                var particleCount = 50 * (timeLeft / duration);
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        function randomInRange(min, max) { return Math.random() * (max - min) + min; }
+
+        // 彩蛋：来自未来的讯息
+        const eggMessages = [
+            "🔮 预测：你将在3天内解决一个困扰已久的 Bug。",
+            "🤖 系统提示：你的大脑神经元正在建立新的 AI 连接...",
+            "🌟 只要坚持，你就是未来的 Prompt 工程师。",
+            "💡 建议：试着用 AI 帮你写一段 Python 代码。",
+            "🚀 你的学习速度已经超过了 80% 的人类。",
+            "🌌 AI 不会取代你，会用 AI 的你将取代其他人。"
+        ];
+
+        function triggerEgg() {
+            const eggModal = document.getElementById('eggModal');
+            const eggText = document.getElementById('eggText');
+            
+            // 随机选一条
+            eggText.innerText = eggMessages[Math.floor(Math.random() * eggMessages.length)];
+            
+            // 显示动画
+            eggModal.classList.remove('pointer-events-none', 'opacity-0');
+            const content = eggModal.querySelector('div');
+            content.classList.remove('scale-90');
+            content.classList.add('scale-100');
+            
+            // 3秒后自动消失
+            setTimeout(() => {
+                content.classList.remove('scale-100');
+                content.classList.add('scale-90');
+                eggModal.classList.add('opacity-0', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // 初始化
+        renderList();
+    </script>
+</body>
+</html>
