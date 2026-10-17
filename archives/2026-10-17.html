@@ -1,0 +1,140 @@
+
+    <!DOCTYPE html>
+    <html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>回顾: 2026-10-17</title>
+        <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2965/2965879.png">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
+        <style>
+            body { font-family: 'Noto Sans SC', sans-serif; background-color: #0f172a; color: #e2e8f0; padding-bottom: 100px; -webkit-tap-highlight-color: transparent; }
+            .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+            a { color: #38bdf8; }
+            
+            /* 深度研报特别样式 (压轴) */
+            h3 { color: #fff; font-size: 1.1rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+            blockquote { border-left: 4px solid #facc15; padding-left: 1rem; color: #94a3b8; font-style: italic; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 0 8px 8px 0; }
+            
+            h2 { color: #facc15; font-size: 1.4rem; font-weight: bold; margin-top: 2.5rem; border-bottom: 1px solid #334155; padding-bottom: 0.5rem; }
+            li { margin-bottom: 1rem; line-height: 1.6; }
+            strong { color: #fff; font-weight: 600; }
+            
+            /* 播放器样式 */
+            .music-player { 
+                position: fixed; bottom: 25px; right: 25px; z-index: 9999; 
+                display: flex; gap: 12px; align-items: center; 
+                background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(10px); 
+                padding: 8px 12px; border-radius: 50px; 
+                border: 1px solid rgba(255,255,255,0.2); 
+                box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            }
+            .music-btn { 
+                width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; 
+                border-radius: 50%; background: rgba(255,255,255,0.15); font-size: 20px; cursor: pointer; 
+            }
+            .music-btn:active { background: rgba(255,255,255,0.3); transform: scale(0.95); }
+            #musicStatus { font-size: 12px; max-width: 150px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+        </style>
+    </head>
+    <body class="min-h-screen bg-slate-900">
+
+        <div class="max-w-4xl mx-auto p-4 md:p-8 pt-10">
+            <header class="mb-6 text-center">
+                <h1 class="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 mb-1">
+                    每日全球深度早报
+                </h1>
+                <p class="text-slate-500 text-xs uppercase tracking-widest">2026-10-17 | 10:49:03</p>
+            </header>
+
+            <div class="glass-panel rounded-xl p-3 mb-6 flex justify-between items-center text-xs">
+                <div id="topStatus" class="text-slate-400">🎵 点击右下角播放完整版音乐</div>
+                <div class="flex gap-2">
+                    <input type="date" id="datePicker" min="2025-11-26" class="bg-slate-700 text-white rounded px-2 py-1">
+                    <button onclick="gotoDate()" class="bg-blue-600 text-white px-3 py-1 rounded">回顾</button>
+                    <a href="index.html" class="ml-2 text-slate-400 underline self-center">今日</a>
+                </div>
+            </div>
+
+            <div class="glass-panel rounded-2xl p-5 md:p-8 shadow-2xl">
+                <!-- 渲染内容 -->
+                <div id="content" class="prose prose-invert max-w-none text-sm md:text-base"></div>
+            </div>
+
+            <footer class="mt-8 text-center text-slate-600 text-xs">
+                Powered by DeepSeek AI
+            </footer>
+        </div>
+
+        <audio id="bgMusic" preload="auto"></audio>
+        
+        <div class="music-player">
+            <div id="musicStatus" class="text-white hidden md:block mr-2">准备就绪</div>
+            <button class="music-btn" onclick="playNext()" title="下一首">⏭️</button>
+            <button class="music-btn" onclick="toggleMusic()" title="播放/暂停">
+                <span id="musicIcon">🔇</span>
+            </button>
+        </div>
+
+        <script>
+            document.getElementById('content').innerHTML = marked.parse(`AI 生成失败。`);
+
+            function gotoDate() {
+                const date = document.getElementById('datePicker').value;
+                if(date) window.location.href = `archives/${date}.html`;
+            }
+
+            const playlist = ["https://cdn.pixabay.com/audio/2022/08/02/audio_884fe92c21.mp3", "https://cdn.pixabay.com/audio/2022/10/14/audio_9939f792cb.mp3", "https://cdn.pixabay.com/audio/2021/09/06/audio_9c04a27542.mp3", "https://cdn.pixabay.com/audio/2022/05/27/audio_1808fbf07a.mp3", "https://cdn.pixabay.com/audio/2021/11/01/audio_0346bf2826.mp3"];
+            const audio = document.getElementById('bgMusic');
+            const icon = document.getElementById('musicIcon');
+            const status = document.getElementById('musicStatus');
+            const topStatus = document.getElementById('topStatus');
+            
+            let currentIndex = Math.floor(Math.random() * playlist.length);
+
+            audio.src = playlist[currentIndex];
+            // 不自动播放
+
+            function updateUI(state) {
+                if (state === 'playing') {
+                    icon.innerHTML = '⏸️';
+                    status.innerHTML = '🎵 正在播放 (完整版)';
+                    topStatus.innerHTML = '🎹 沉浸阅读模式: 开启';
+                } else if (state === 'paused') {
+                    icon.innerHTML = '▶️';
+                    status.innerHTML = '💤 已暂停';
+                } else if (state === 'loading') {
+                    icon.innerHTML = '⏳';
+                    status.innerHTML = '📡 缓冲中...';
+                }
+            }
+
+            function playNext() {
+                updateUI('loading');
+                currentIndex = (currentIndex + 1) % playlist.length;
+                audio.src = playlist[currentIndex];
+                audio.play().then(() => updateUI('playing')).catch(e => updateUI('paused'));
+            }
+
+            function toggleMusic() {
+                if (audio.paused) {
+                    updateUI('loading');
+                    audio.play().then(() => updateUI('playing')).catch(e => {
+                        audio.load();
+                        audio.play().then(() => updateUI('playing'));
+                    });
+                } else {
+                    audio.pause();
+                    updateUI('paused');
+                }
+            }
+
+            audio.addEventListener('ended', playNext);
+        </script>
+    </body>
+    </html>
+    
